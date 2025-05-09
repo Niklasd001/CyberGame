@@ -1,0 +1,122 @@
+# ========== UNITY PROJECT ==========
+
+# Cartelle generate automaticamente
+.utmp/
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+UserSettings/
+sysinfo.txt
+
+# Plugin temporanei e generati
+[Aa]ssets/Plugins/Editor/JetBrains*
+
+# File Unity inutili o di crash
+*.pidb
+*.pidb.meta
+*.booproj
+*.svd
+*.pdb
+*.pdb.meta
+*.mdb
+*.mdb.meta
+*.opendb
+*.bak
+*.old
+*.orig
+*.log
+# Ignora texture alte risoluzioni
+*.png
+*.psd
+*.tif
+# Ignora asset pesanti
+*.fbx
+*.wav
+*.mp4
+# Ignora cartelle specifiche
+Assets/BackPack/
+Assets/KLURA Design Assets/
+
+# Backup Android/Addressable temporanei
+[Aa]ssets/AddressableAssetsData/*/*.bin*
+[Aa]ssets/StreamingAssets/aa.meta
+[Aa]ssets/StreamingAssets/aa/*
+
+# ========== IDE / EDITOR ==========
+
+# Visual Studio
+.vs/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.tmp
+*.userprefs
+*.VC.db
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# VSCode
+.vscode/
+
+# ========== SISTEMA OPERATIVO ==========
+
+.DS_Store
+Thumbs.db
+
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# ========== PACCHETTI UNITY ==========
+
+Packages/com.unity.package-manager-ui/
+
+# == VS Code ==
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+
+
+
