@@ -29,14 +29,6 @@ sysinfo.txt
 *.old
 *.orig
 *.log
-# Ignora texture alte risoluzioni
-*.png
-*.psd
-*.tif
-# Ignora asset pesanti
-*.fbx
-*.wav
-*.mp4
 # Ignora cartelle specifiche
 Assets/BackPack/
 Assets/KLURA Design Assets/
