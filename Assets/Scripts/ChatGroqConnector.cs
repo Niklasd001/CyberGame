@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class ChatGroqConnector : MonoBehaviour
 {
-    public TMP_Text inputText;
-    public TMP_Text responseText;
-    public Button submitButton;
-
+    public TMP_Text inputText;                // Campo con testo STT trascritto
+    public Button submitButton;               // Bottone per confermare invio
+    public ChatMessageManager chatManager;    // Nuovo gestore chat
     public string apiKey;
+
     private bool isRequestInProgress = false;
 
     void Start()
@@ -18,7 +18,18 @@ public class ChatGroqConnector : MonoBehaviour
         submitButton.onClick.AddListener(() =>
         {
             if (!isRequestInProgress)
+            {
+                string userMessage = inputText.text;
+
+                //  Mostra anche il messaggio dell’utente nella chat
+                chatManager.AggiungiMessaggio(userMessage, true);
+
+                //  Poi mostra "Sto pensando..."
+                chatManager.AggiungiMessaggio("Sto pensando...", false);
+
+                // Avvia la richiesta
                 StartCoroutine(SendQuestion());
+            }
         });
     }
 
@@ -28,21 +39,20 @@ public class ChatGroqConnector : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(userMessage))
         {
-            responseText.text = "Scrivi qualcosa prima.";
+            chatManager.AggiungiMessaggio("Scrivi qualcosa prima.", false);
             yield break;
         }
 
         isRequestInProgress = true;
-        responseText.text = "Sto pensando...";
 
-        // Prompt di sistema VR-friendly
+        // Prompt di sistema
         GroqRequest requestData = new GroqRequest
         {
             model = "llama3-8b-8192",
             messages = new[] {
                 new Message {
                     role = "system",
-                    content = "Sei un esperto di sicurezza informatica che lavora in una sala server sotterranea. Rispondi solo su temi di informatica e sicurezza informatica. Rispondi con una frase secca, semplice, max 30 parole. Parla come se ti rivolgessi a un principiante. Rispondimi sempre in inglese, dopo di questa frase parte la vera domanda dell' utente."
+                    content = "Sei un esperto di sicurezza informatica che lavora in una sala server sotterranea. Rispondi solo su temi di informatica e sicurezza informatica. Rispondi con una frase secca, semplice, max 30 parole. Parla come se ti rivolgessi a un principiante. Rispondi sempre in inglese, dopo di questa frase parte la vera domanda dell’utente."
                 },
                 new Message {
                     role = "user",
@@ -67,29 +77,22 @@ public class ChatGroqConnector : MonoBehaviour
 
         if (request.result != UnityWebRequest.Result.Success)
         {
-            responseText.text = "Errore " + statusCode + ": " + request.error;
+            chatManager.AggiungiMessaggio("Errore " + statusCode + ": " + request.error, false);
         }
         else
         {
             string content = ExtractResponse(responseJson);
-            StartCoroutine(TypeText(content));
+            chatManager.RimuoviUltimoBotThinking();
+            //  Mostra risposta dell’AI
+            chatManager.AggiungiMessaggio(content, false);
 
+            //  Avvia lettura vocale con TTS
             string[] words = content.Split(' ');
             string shortText = string.Join(" ", words, 0, Mathf.Min(30, words.Length));
             FindFirstObjectByType<TextToSpeechElevenLabs>().Speak(shortText);
         }
 
         isRequestInProgress = false;
-    }
-
-    IEnumerator TypeText(string fullText)
-    {
-        responseText.text = "";
-        foreach (char c in fullText)
-        {
-            responseText.text += c;
-            yield return new WaitForSeconds(0.02f); // Velocita digitazione
-        }
     }
 
     string ExtractResponse(string json)
@@ -101,7 +104,7 @@ public class ChatGroqConnector : MonoBehaviour
         }
         catch
         {
-            return "Errore durante il parsing della risposta.";
+            return "Errore nel parsing della risposta.";
         }
     }
 
