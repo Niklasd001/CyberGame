@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,11 +11,24 @@ public class CambiaScena : MonoBehaviour
         if (!string.IsNullOrEmpty(nomeScena))
         {
             Debug.Log("Cambio scena in corso: " + nomeScena);
-            SceneManager.LoadScene(nomeScena);
+            //  SceneManager.LoadScene(nomeScena);
+            StartCoroutine(CaricaSceneAsync());
         }
         else
         {
             Debug.LogWarning("Nome scena non impostato!");
+        }
+    }
+
+    private IEnumerator CaricaSceneAsync()
+    {
+        AsyncOperation operazione = SceneManager.LoadSceneAsync(nomeScena);
+
+        while (!operazione.isDone)
+        {
+            // Se vuoi, puoi stampare il progresso:
+            Debug.Log("Progress: " + (operazione.progress * 100f) + "%");
+            yield return null;
         }
     }
 }

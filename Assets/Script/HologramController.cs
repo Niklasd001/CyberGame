@@ -65,7 +65,7 @@ public class GuidaController : MonoBehaviour
                 cyberHelper = ologramma.GetComponent<CyberHelper>();
 
             if (cyberHelper != null)
-                cyberHelper.Parla("Benvenuto! Siamo sotto attacco, vieni con me alla postazione!");
+                cyberHelper.Parla("Hi, you are into the firewall, see around of you");
 
 
         }

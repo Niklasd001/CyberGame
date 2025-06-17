@@ -8,6 +8,7 @@ public class TriggerDoor : MonoBehaviour
     public void CallOpenDoor()
     {
         if(!doorSup.isOpen && !doorInf.isOpen) {
+            Debug.Log("sto per aprire la porta");
         StartCoroutine(doorSup.OpenDoor());
         StartCoroutine(doorInf.OpenDoor());
         }

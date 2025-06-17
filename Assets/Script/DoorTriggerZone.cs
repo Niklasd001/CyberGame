@@ -9,6 +9,7 @@ public class DoorTriggerZone : MonoBehaviour
         if (other.CompareTag("Player")) // Assicurati che il player abbia questo tag
         {
             triggerDoor.CallOpenDoor();
+            Debug.Log("trigger toccato");
         }
     }
 }

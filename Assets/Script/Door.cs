@@ -18,6 +18,7 @@ public class Door : MonoBehaviour
     }
 
     public IEnumerator OpenDoor() {
+        Debug.Log("aprendo porta");
         Vector3 finalPos = new Vector3(transform.position.x, initPosy + shiftPosy, transform.position.z);
         isOpen = true;
         isDoingActivity = true;

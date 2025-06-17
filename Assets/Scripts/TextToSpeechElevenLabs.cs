@@ -7,7 +7,7 @@ public class TextToSpeechElevenLabs : MonoBehaviour
 {
     public AudioSource audioSource;
     public string apiKey;
-    private string voiceId = "EXAVITQu4vr4xnSDxMaL"; // voce "Rachel" di default
+    public string voiceId;
 
     public void Speak(string text)
     {
@@ -53,6 +53,11 @@ public class TextToSpeechElevenLabs : MonoBehaviour
             }
         }
     }
+    public void SetVoice(string newVoiceId)
+    {
+        voiceId = newVoiceId;
+    }
+
 
     [System.Serializable]
     public class ElevenRequest

@@ -25,7 +25,7 @@ public class GifLoader : MonoBehaviour
     void Update()
     {
         if (frames == null || frames.Length == 0) return;
-
+        Debug.Log("sto caricando i frame per aggiornare la palla magica");
         timer += Time.deltaTime;
         if (timer >= 1f / frameRate)
         {
