@@ -25,11 +25,14 @@ public class SceneTransition : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         if (hasEntered) return;
-
-        if (other.CompareTag("Player"))
+        if (SceneContext.isDoingFirewall == false)
+            SceneContext.isDoingFirewall = true;
         {
-            hasEntered = true;
-            StartCoroutine(TransitionWithFade());
+            if (other.CompareTag("Player"))
+            {
+                hasEntered = true;
+                StartCoroutine(TransitionWithFade());
+            }
         }
     }
 
