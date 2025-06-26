@@ -4,12 +4,12 @@ using System.Collections;
 
 public class HelpCeaserGameAlphabet : MonoBehaviour
 {
-    public GameObject helpUIPanel;  // Il pannello UI con domanda e bottoni
-    public GameObject alphabetImage; // Immagine alfabeto da mostrare
-    public AudioSource audioSource; // Audio source per l'audio di aiuto
-    public string helpAudioFile; // Nome dell'audio di aiuto
+    public GameObject helpUIPanel;         // The UI panel with question and buttons
+    public GameObject alphabetImage;       // Alphabet image to show
+    public AudioSource audioSource;        // Audio source for help audio
+    public string helpAudioFile;           // Name of the help audio file
 
-    public float delayBeforePrompt = 30f; // Ritardo prima di mostrare l'aiuto
+    public float delayBeforePrompt = 30f;  // Delay before showing the help panel
 
     private Coroutine promptCoroutine;
     private bool isHelpShown = false;
@@ -28,31 +28,32 @@ public class HelpCeaserGameAlphabet : MonoBehaviour
         {
             if (promptCoroutine != null)
                 StopCoroutine(promptCoroutine);
+
             HideHelpUI();
         }
     }
 
-    IEnumerator ShowHelpPromptAfterDelay()
+    private IEnumerator ShowHelpPromptAfterDelay()
     {
         yield return new WaitForSeconds(delayBeforePrompt);
 
-        // Mostra il pannello di aiuto
+        // Show the help panel
         helpUIPanel.SetActive(true);
 
-        // Riproduci l'audio di aiuto
+        // Play the help audio
         PlayHelpAudio();
     }
 
     public void OnHelpYes()
     {
-        // Mostra l'alfabeto
+        // Show the alphabet image
         alphabetImage.SetActive(true);
         helpUIPanel.SetActive(false);
     }
 
     public void OnHelpNo()
     {
-        // Nascondi il pannello di aiuto
+        // Hide the help panel
         helpUIPanel.SetActive(false);
     }
 
@@ -84,7 +85,7 @@ public class HelpCeaserGameAlphabet : MonoBehaviour
         }
     }
 
-    // Chiamato quando il giocatore risolve il cifrario prima del tempo limite
+    // Called when the player solves the cipher before the time limit
     public void StopHelpIfSolved()
     {
         if (isHelpShown)
@@ -94,7 +95,7 @@ public class HelpCeaserGameAlphabet : MonoBehaviour
         }
     }
 
-    // Metodo per marcare che l'aiuto è stato mostrato
+    // Mark that the help has already been shown
     public void MarkHelpAsShown()
     {
         isHelpShown = true;

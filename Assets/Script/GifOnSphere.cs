@@ -12,20 +12,27 @@ public class GifLoader : MonoBehaviour
     void Start()
     {
         rend = GetComponent<Renderer>();
-
-        // Carica tutti i frame dalla cartella Resources/SplitGIF
         frames = Resources.LoadAll<Texture2D>("SplitGIF");
 
         if (frames.Length == 0)
         {
-            Debug.LogError(" Nessun frame trovato in Resources/SplitGIF!");
+            Debug.LogError("No frames found in Resources/SplitGIF!");
+            return;
         }
+
+        // Create a material with Unlit shader
+        // You can also use "Universal Render Pipeline/Unlit" if using URP
+        Material unlitMat = new Material(Shader.Find("Unlit/Texture"));
+        unlitMat.mainTexture = frames[0];  // Set the first frame initially
+        rend.material = unlitMat;
     }
 
     void Update()
     {
         if (frames == null || frames.Length == 0) return;
-        Debug.Log("sto caricando i frame per aggiornare la palla magica");
+
+        Debug.Log("Loading frames to update the magic sphere");
+
         timer += Time.deltaTime;
         if (timer >= 1f / frameRate)
         {

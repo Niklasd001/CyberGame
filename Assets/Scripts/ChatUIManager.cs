@@ -8,7 +8,7 @@ public class ChatUIManager : MonoBehaviour
     public Transform messageContainer;
     public ScrollRect scrollRect;
 
-    private GameObject pendingMessageGO; // messaggio utente in attesa di conferma
+    private GameObject pendingMessageGO; 
 
     private int counter = 0;
 

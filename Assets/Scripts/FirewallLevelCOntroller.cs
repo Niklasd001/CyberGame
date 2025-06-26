@@ -5,7 +5,7 @@ using System.Collections;
 
 public class FirewallLevelController : MonoBehaviour
 {
-    [Header("Riferimento alla barra di sovraccarico")]
+    [Header("Reference to the server overload bar")]
     public ServerOverloadBar overloadBar;
 
     [Header("Fade Settings")]
@@ -22,7 +22,7 @@ public class FirewallLevelController : MonoBehaviour
     public void OnFirewallCorrectlyConfigured()
     {
         firewallActivated = true;
-        Debug.Log("Firewall configurato correttamente. Monitoraggio traffico in corso...");
+        Debug.Log("Firewall successfully configured. Monitoring traffic...");
     }
 
     void Update()
@@ -35,7 +35,7 @@ public class FirewallLevelController : MonoBehaviour
         if (!hasPassed60Once && ratio > 0.6f)
         {
             hasPassed60Once = true;
-            Debug.Log("Sovraccarico ha superato il 60% almeno una volta.");
+            Debug.Log("Overload exceeded 60% at least once.");
         }
 
         if (hasPassed60Once && ratio <= 0.5f)
@@ -47,8 +47,9 @@ public class FirewallLevelController : MonoBehaviour
 
     private IEnumerator EndLevelSequence()
     {
-        Debug.Log(" Sovraccarico sceso sotto il 50%. Fine livello.");
+        Debug.Log("Overload dropped below 50%. Ending level...");
 
+        // Start fade-out effect
         float timer = 0f;
         Color c = fadeImage.color;
         c.a = 0f;
@@ -62,6 +63,22 @@ public class FirewallLevelController : MonoBehaviour
             yield return null;
         }
 
-        SceneManager.LoadScene(mainSceneName);
+        // Start asynchronous scene loading
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(mainSceneName);
+        asyncLoad.allowSceneActivation = false; // Prevent automatic scene switch
+
+        // Wait until the scene is nearly loaded (90%)
+        while (asyncLoad.progress < 0.9f)
+        {
+            yield return null;
+        }
+
+        Debug.Log("Scene loaded. Activating shortly...");
+
+        // Optional dramatic pause
+        yield return new WaitForSeconds(1f);
+
+        // Activate the new scene
+        asyncLoad.allowSceneActivation = true;
     }
 }

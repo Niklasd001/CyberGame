@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class PacketSpawner : MonoBehaviour
 {
+    [Header("Packet Settings")]
     public GameObject packetPrefab;
     public Transform[] spawnPoints;
     public Transform serverTarget;
 
+    [Header("Spawn Timing")]
     public float initialSpawnRate = 2f;
     public float minSpawnRate = 0.3f;
     public float spawnAcceleration = 0.05f;
@@ -13,7 +15,6 @@ public class PacketSpawner : MonoBehaviour
     private float currentSpawnRate;
     private float timer;
 
- 
     void Start()
     {
         currentSpawnRate = initialSpawnRate;
@@ -29,18 +30,19 @@ public class PacketSpawner : MonoBehaviour
             SpawnPacket();
             timer = 0f;
 
-            // aumenta difficoltà
+            // Gradually increase difficulty by reducing spawn interval
             currentSpawnRate = Mathf.Max(minSpawnRate, currentSpawnRate - spawnAcceleration);
         }
     }
 
     void SpawnPacket()
     {
-        // scegli punto casuale
+        // Choose a random spawn point
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+
+        // Instantiate a packet and assign movement
         GameObject packet = Instantiate(packetPrefab, spawnPoint.position, Quaternion.identity);
 
-        // attacca mover
         PacketMover mover = packet.AddComponent<PacketMover>();
         mover.target = serverTarget;
     }

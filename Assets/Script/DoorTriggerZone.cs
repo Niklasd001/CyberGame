@@ -6,7 +6,7 @@ public class DoorTriggerZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) // Assicurati che il player abbia questo tag
+        if (other.CompareTag("Player")) 
         {
             triggerDoor.CallOpenDoor();
             Debug.Log("trigger toccato");

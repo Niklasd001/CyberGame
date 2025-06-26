@@ -9,82 +9,67 @@ using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
 
 public class CeaserChipher : MonoBehaviour
 {
-    public TMP_Text testoCrittografato;  // Testo cifrato visualizzato
-    public TMP_InputField inputField;    // Campo di input
-    public Light indicatoreLuce;         // Luce che indica il risultato
+    public TMP_Text testoCrittografato;     // Encrypted text displayed
+    public TMP_InputField inputField;       // Input field for player answer
+    public Light indicatoreLuce;            // Light to indicate result
     public Light allarmePorta;
-    public Button confermaButton;        // Bottone per confermare la risposta
-    public GameObject spatialKeyboard;   // Riferimento alla tastiera XR
-    public TMP_Text keyboardOutput;      // Testo mostrato sulla tastiera
-    public TMP_Text suggerimentoText;     // TextMeshPro separato per il suggerimento
+    public Button confermaButton;           // Confirm button
+    public GameObject spatialKeyboard;      // XR keyboard reference
+    public TMP_Text keyboardOutput;         // Output text from the XR keyboard
+    public TMP_Text suggerimentoText;       // Guide/hint text shown separately
     public GameObject locomotion;
 
+    public TMP_Text systemStatusText;
     public SubtitleManager subtitleManager;
 
     public string fraseOriginale;
     public int chiave = 3;
-    
 
-    public AlarmLight alarmLightScript;  // Aggiungi questa variabile
-
-   // private HelpCeaserGameAlphabet helpCeaserGameAlphabet; //riferimento per gestire l aiuto al player
-    public TriggerDoor triggerDoor; // Chiamata al gameobject che gestisce l apertura delle porte
-
-  
+    public AlarmLight alarmLightScript;     // Light blinking manager
+    public TriggerDoor triggerDoor;         // Reference to the door opener script
 
     private void Start()
     {
-   
-        // Cifra e mostra la frase crittografata
+        // Encrypt and show the phrase at start
         string fraseCifrata = CifraFrase(fraseOriginale, chiave);
         testoCrittografato.text = fraseCifrata;
 
-        // Spegne la luce all'inizio
+        // Turn off the light at the beginning
         if (indicatoreLuce != null)
         {
             indicatoreLuce.intensity = 0;
         }
 
-        // Assegna la funzione al bottone di conferma
+        // Bind confirm button to check response
         if (confermaButton != null)
         {
             confermaButton.onClick.AddListener(VerificaRisposta);
         }
 
-        // Nasconde la tastiera XR all'inizio
-        if (spatialKeyboard != null)
-        {
-            spatialKeyboard.SetActive(false);
-        }
-
-        // Imposta il testo dell'input con trattini per la parola da indovinare
+        // Set the placeholder with underscores and last word revealed
         suggerimentoText.text = CreaParolaConTrattini();
 
-        // Quando il campo di input viene selezionato, apre la tastiera
+        // Open keyboard when input field is selected
         inputField.onSelect.AddListener(OpenKeyboard);
-     
     }
-
 
     private string CreaParolaConTrattini()
     {
         string trattini = "";
-        string[] parole = fraseOriginale.Split(' '); // Dividi la frase in parole
+        string[] parole = fraseOriginale.Split(' ');
 
-        // Itera su tutte le parole tranne l'ultima
+        // Generate underscores for all but the last word
         for (int i = 0; i < parole.Length - 1; i++)
         {
-            // Aggiungi trattini per ogni lettera della parola
             foreach (char c in parole[i])
             {
-                trattini += "_";  // Trattino per ogni lettera
+                trattini += "_";
             }
-            trattini += " ";  // Aggiungi uno spazio tra le parole
+            trattini += " ";
         }
 
-        // Aggiungi l'ultima parola in chiaro
+        // Keep the last word visible
         trattini += parole[parole.Length - 1];
-
         return trattini.Trim();
     }
 
@@ -100,8 +85,8 @@ public class CeaserChipher : MonoBehaviour
     {
         if (keyboardOutput != null && inputField != null)
         {
-            Debug.Log("Testo tastiera: " + keyboardOutput.text); // Log per verificare il testo
-            inputField.text = keyboardOutput.text;  // Copia il testo dalla tastiera all'input field
+            Debug.Log("Keyboard text: " + keyboardOutput.text);
+            inputField.text = keyboardOutput.text;
         }
     }
 
@@ -149,28 +134,28 @@ public class CeaserChipher : MonoBehaviour
 
     public void VerificaRisposta()
     {
-        UpdateInputFieldFromKeyboard(); // Aggiorna l'input con il testo della tastiera XR
+        UpdateInputFieldFromKeyboard();
 
         string risposta = inputField.text.Trim();
 
-        // Rimuovi l'ultima parola dal confronto, poiché deve essere mostrata in chiaro
         string[] paroleRisposta = risposta.Split(' ');
         string[] paroleOriginali = fraseOriginale.Split(' ');
 
-        // Confronta solo le parole cifrate
-        bool rispostaCorretta = true;
-        for (int i = 0; i < paroleRisposta.Length - 1; i++)  // Escludi l'ultima parola
+        // Compare only encrypted words (exclude the last one)
+        bool rispostaCorretta = false;
+        for (int i = 0; i < paroleRisposta.Length - 1; i++)
         {
             if (!string.Equals(paroleRisposta[i], paroleOriginali[i], StringComparison.OrdinalIgnoreCase))
             {
                 rispostaCorretta = false;
                 break;
             }
+            rispostaCorretta = true;
         }
 
         if (rispostaCorretta)
         {
-            Debug.Log("Risposta corretta! La porta si apre.");
+            Debug.Log("Correct answer! Door opening.");
             SceneContext.isDoingCeaser = true;
             AccendiLuce(Color.green, 5);
             if (alarmLightScript != null)
@@ -185,11 +170,11 @@ public class CeaserChipher : MonoBehaviour
         }
         else
         {
-            Debug.Log("Risposta errata. Riprova!");
+            Debug.Log("Wrong answer. Try again!");
             AccendiLuce(Color.red, 5);
         }
 
-        CloseKeyboard(); // Chiude la tastiera dopo aver confermato
+        CloseKeyboard();
     }
 
     private void AccendiLuce(Color colore, float intensita)
@@ -203,49 +188,57 @@ public class CeaserChipher : MonoBehaviour
 
     private void ShowCesareExplanation()
     {
-        
         string[] explanation = new string[]
         {
-        "The Caesar cipher was used by Julius Caesar to communicate securely with his generals over long distances.",
-        "It's a substitution cipher, where letters are shifted by a set number.",
-        "This made it hard for enemies to understand the messages.By today’s standards, it’s not secure at all.",
-        "However, it was a clever method for protecting military communications at the time.",
+            "The Caesar cipher was used by Julius Caesar to communicate securely with his generals over long distances.",
+            "It's a substitution cipher, where letters are shifted by a set number.",
+            "This made it hard for enemies to understand the messages. By today’s standards, it’s not secure at all.",
+            "However, it was a clever method for protecting military communications at the time.",
         };
+
         locomotion.SetActive(false);
-        // Usa SubtitleManager per mostrare e leggere ogni frase una alla volta
+
+        // Use SubtitleManager to show and read each sentence one by one
         StartCoroutine(DisplayExplanation(explanation));
-        
     }
 
     private IEnumerator DisplayExplanation(string[] explanation)
     {
-        // Lista di file audio da associare alle frasi
         string[] audioFiles = { "Ceaser1", "Ceaser2", "Ceaser3", "ceaser4" };
-        
+
         for (int i = 0; i < explanation.Length; i++)
         {
-            // Mostra il sottotitolo e riproduci l'audio
+            // Show subtitle and play audio
             subtitleManager.ShowSubtitle(explanation[i], audioFiles[i]);
 
-            // Carica l'audio per ottenere la durata
+            // Load audio to get its duration
             AudioClip clip = Resources.Load<AudioClip>("Audio/Narrative/" + audioFiles[i]);
             if (clip != null)
             {
-                // Attendi la durata dell'audio
                 yield return new WaitForSeconds(clip.length);
-
-               
             }
             else
             {
                 Debug.LogError("Audio file not found: " + audioFiles[i]);
             }
-           
         }
-        locomotion.SetActive(true);
 
+        locomotion.SetActive(true);
     }
 
+    private void ShowSystemStatus(string message, Color color)
+    {
+        systemStatusText.text = message;
+        systemStatusText.color = color;
+        systemStatusText.gameObject.SetActive(true);
 
+        StopCoroutine("FadeStatusText");
+        StartCoroutine(FadeStatusText());
+    }
+
+    private IEnumerator FadeStatusText()
+    {
+        yield return new WaitForSeconds(2f);
+        systemStatusText.gameObject.SetActive(false);
+    }
 }
-

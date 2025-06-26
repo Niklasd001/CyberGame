@@ -1,47 +1,42 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class SpeechBubbleController : MonoBehaviour
 {
-    public GameObject bubbleCanvas;
-    public TextMeshProUGUI bubbleText;
-    public float displayTime;
-
-    public TextToSpeechElevenLabs tts;  // Riferimento al TTS
+    public GameObject bubbleCanvas;          // Canvas for the speech bubble
+    public TextMeshProUGUI bubbleText;       // Text component inside the bubble
+    public float displayTime = 3f;           // Duration to show the message
 
     private Coroutine hideCoroutine;
 
     void Start()
     {
-        bubbleCanvas.SetActive(false); // nasconde all'inizio
+        bubbleCanvas.SetActive(false); // Hide bubble at start
     }
 
     public void ShowMessage(string message)
     {
         if (hideCoroutine != null)
-            StopCoroutine(hideCoroutine);
+            StopCoroutine(hideCoroutine); // Cancel previous hide timer
 
         bubbleText.text = message;
         bubbleCanvas.SetActive(true);
-        Debug.Log("Siamo dentro showMessage");
 
-        // Fa parlare la voce TTS
-       /* if (tts != null)
-            tts.Speak(message);
-        else
-            Debug.LogWarning("TTS non assegnato a SpeechBubbleController");
-       */
+        Debug.Log("ShowMessage triggered with: " + message);
 
         hideCoroutine = StartCoroutine(HideAfterDelay());
     }
+
     public void HideMessage()
     {
-        bubbleCanvas.SetActive(false); // Nasconde la nuvoletta
-        bubbleText.text = ""; // Pulisce il testo
+        bubbleCanvas.SetActive(false); // Hide the bubble
+        bubbleText.text = "";          // Clear the text
     }
-    private System.Collections.IEnumerator HideAfterDelay()
+
+    private IEnumerator HideAfterDelay()
     {
         yield return new WaitForSeconds(displayTime);
-        bubbleCanvas.SetActive(false);
+        HideMessage(); // Use central method to clean up
     }
 }

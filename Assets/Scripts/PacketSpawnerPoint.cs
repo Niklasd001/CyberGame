@@ -3,11 +3,12 @@ using TMPro;
 
 public class PacketSpawnerPoint : MonoBehaviour
 {
+    [Header("Packet Configuration")]
     public GameObject packetPrefab;
     public Transform target;
     public bool isMalicious = true;
     public float spawnInterval = 3f;
-    public string ipAddress;  // IP fisso assegnato da Inspector
+    public string ipAddress;  // IP assigned in Inspector
 
     private float timer = 0f;
 
@@ -25,11 +26,11 @@ public class PacketSpawnerPoint : MonoBehaviour
     {
         GameObject packet = Instantiate(packetPrefab, transform.position, Quaternion.identity);
 
-        // Movimento verso il server
+        // Add and configure movement behavior
         PacketMover mover = packet.AddComponent<PacketMover>();
         mover.target = target;
 
-        // Assegna info e aggiorna colore
+        // Assign packet info and update visuals
         PacketInfo info = packet.GetComponent<PacketInfo>();
         if (info != null)
         {
@@ -37,18 +38,17 @@ public class PacketSpawnerPoint : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("PacketInfo mancante sul prefab!");
+            Debug.LogWarning("PacketInfo component missing on prefab!");
         }
 
-        // Lati IP (Lato1 e Lato2)
+        // Display IP on sides Lato1 and Lato2
         SetTMPText(packet, "Lato1", ipAddress);
         SetTMPText(packet, "Lato2", ipAddress);
 
-        // Lati Protocollo (Lato3 e Lato4)
+        // Display Protocol on sides Lato3 and Lato4
         SetTMPText(packet, "Lato3", info.protocol);
         SetTMPText(packet, "Lato4", info.protocol);
     }
-
 
     void SetTMPText(GameObject parent, string childName, string value)
     {
@@ -60,14 +60,14 @@ public class PacketSpawnerPoint : MonoBehaviour
             {
                 tmp.text = value;
 
-                // Imposta una dimensione fissa solo la prima volta
-                if (tmp.fontSize > 20)  // Supponiamo che il default sia 36
+                // Set a smaller font size only once if default is too large
+                if (tmp.fontSize > 20) // Assume default is 36
                     tmp.fontSize *= 0.5f;
             }
         }
         else
         {
-            Debug.LogWarning($"Canvas {childName} non trovato nel pacchetto!");
+            Debug.LogWarning($"Canvas '{childName}' not found inside the packet prefab!");
         }
     }
 }

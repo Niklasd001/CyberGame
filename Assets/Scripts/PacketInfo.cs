@@ -13,7 +13,7 @@ public class PacketInfo : MonoBehaviour
         rend = GetComponent<Renderer>();
     }
 
-    // Nuovo metodo per impostare i dati e aggiornare il colore
+    // Initialize color 
     public void Initialize(string ip, bool malicious)
     {
         ipAddress = ip;

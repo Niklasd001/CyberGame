@@ -3,8 +3,10 @@ using UnityEngine;
 public class ImageSnapSlot : MonoBehaviour
 {
     public string expectedPieceName;
-    public Transform snapPoint;  //  aggiunto
+    public Transform snapPoint;             // Exact snap position
     private bool isFilled = false;
+
+    public GameObject outlineObject;        // Object to activate on error (assign via Inspector)
 
     private void OnTriggerEnter(Collider other)
     {
@@ -12,31 +14,26 @@ public class ImageSnapSlot : MonoBehaviour
 
         if (other.name == expectedPieceName)
         {
-
-            // Usa il punto di snap invece della posizione dello slot
+            // Snap to exact position
             if (snapPoint != null)
             {
-                Debug.Log(" Li sto posizionando bene");
-
                 other.transform.position = snapPoint.position;
                 other.transform.rotation = snapPoint.rotation;
-
-                Debug.Log($" Posizione oggetto: {other.transform.position}");
-                Debug.Log($" Posizione SnapPoint: {snapPoint.position}");
             }
             else
             {
-                Debug.Log("Sono entrato nell else");
                 other.transform.position = transform.position;
                 other.transform.rotation = transform.rotation;
             }
 
+            // Play confirmation sound
             AudioSource pieceAudio = other.GetComponent<AudioSource>();
             if (pieceAudio != null)
             {
                 pieceAudio.Play();
             }
 
+            // Freeze the piece
             Rigidbody rb = other.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -46,12 +43,30 @@ public class ImageSnapSlot : MonoBehaviour
             }
 
             isFilled = true;
-            Debug.Log($"[PUZZLE] Pezzo '{expectedPieceName}' posizionato correttamente!");
+            Debug.Log($"[PUZZLE] Piece '{expectedPieceName}' placed correctly!");
         }
     }
 
     public bool IsFilledCorrectly()
     {
         return isFilled;
+    }
+
+    public void ShowErrorFeedback()
+    {
+        if (outlineObject != null)
+        {
+            outlineObject.SetActive(true);
+            CancelInvoke(nameof(HideFeedback));
+            Invoke(nameof(HideFeedback), 1.2f);
+        }
+    }
+
+    private void HideFeedback()
+    {
+        if (outlineObject != null)
+        {
+            outlineObject.SetActive(false);
+        }
     }
 }

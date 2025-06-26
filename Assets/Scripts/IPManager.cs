@@ -32,7 +32,7 @@ public class IPManager : MonoBehaviour
         {
             blacklist.Add(ip);
 
-            // Aggiorna la torretta
+            // update ip 
             if (turret != null && !turret.ips.Contains(ip))
             {
                 turret.ips.Add(ip);

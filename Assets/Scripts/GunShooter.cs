@@ -14,7 +14,7 @@ public class GunShooter : MonoBehaviour
 
     void Awake()
     {
-        // Mappa direttamente il grilletto destro
+        // Bind directly to the right trigger
         shootAction = new InputAction(type: InputActionType.Button, binding: "<XRController>{RightHand}/trigger");
         shootAction.Enable();
     }
@@ -30,14 +30,16 @@ public class GunShooter : MonoBehaviour
     void Shoot()
     {
         if (shootSound != null)
+        {
+            shootSound.volume = 0.2f;
             shootSound.Play();
+        }
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         rb.linearVelocity = firePoint.forward * bulletSpeed;
 
-
-        Destroy(bullet, 3f); // per evitare accumulo in scena
+        Destroy(bullet, 3f); // Prevent buildup in the scene
     }
 
     void OnDisable()

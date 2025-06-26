@@ -12,19 +12,20 @@ public class FixedRotationOnGrab : MonoBehaviour
         grabInteractable = GetComponent<XRGrabInteractable>();
         originalRotation = transform.rotation;
 
+        // Add listeners to grab and release events
         grabInteractable.selectEntered.AddListener(OnGrab);
         grabInteractable.selectExited.AddListener(OnRelease);
     }
 
     private void OnGrab(SelectEnterEventArgs args)
     {
-        // Blocca la rotazione ogni frame
+        // Disable rotation tracking while grabbed
         grabInteractable.trackRotation = false;
     }
 
     private void OnRelease(SelectExitEventArgs args)
     {
-        // Reset alla rotazione originale
+        // Reset to original rotation when released
         transform.rotation = originalRotation;
     }
 
@@ -32,9 +33,8 @@ public class FixedRotationOnGrab : MonoBehaviour
     {
         if (grabInteractable.isSelected)
         {
-        //    Vector3 euler = transform.rotation.eulerAngles;
-            transform.rotation = originalRotation; // blocca X e Y
+            // Force constant rotation to original while held
+            transform.rotation = originalRotation;
         }
     }
-
 }

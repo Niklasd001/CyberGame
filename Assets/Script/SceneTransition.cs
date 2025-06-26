@@ -5,15 +5,16 @@ using System.Collections;
 
 public class SceneTransition : MonoBehaviour
 {
-    public GameObject gun; // Prefab o GameObject della pistola
+    public GameObject gun;                 // The gun prefab or GameObject
     public AudioSource audioChangeScene;
-    public RawImage fadeImage; // UI nero a tutto schermo
+    public RawImage fadeImage;            // Fullscreen black UI image
     public float fadeDuration = 1f;
     private bool hasEntered = false;
 
     void Start()
     {
-        gun.SetActive(false); // Disattiva pistola nella prima scena
+        gun.SetActive(false); // Disable the gun in the first scene
+
         if (fadeImage != null)
         {
             Color c = fadeImage.color;
@@ -25,14 +26,14 @@ public class SceneTransition : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         if (hasEntered) return;
+
         if (SceneContext.isDoingFirewall == false)
             SceneContext.isDoingFirewall = true;
+
+        if (other.CompareTag("Player"))
         {
-            if (other.CompareTag("Player"))
-            {
-                hasEntered = true;
-                StartCoroutine(TransitionWithFade());
-            }
+            hasEntered = true;
+            StartCoroutine(TransitionWithFade());
         }
     }
 
@@ -41,7 +42,7 @@ public class SceneTransition : MonoBehaviour
         if (audioChangeScene != null)
             audioChangeScene.Play();
 
-        // Fade out
+        // Fade to black
         float timer = 0f;
         while (timer < fadeDuration)
         {
@@ -51,10 +52,12 @@ public class SceneTransition : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
+        // Set context flag and load the next scene
         SceneContext.returningFromSecondScene = true;
         SceneManager.LoadScene("Scenes/firewallScene");
 
-        // Attiva la pistola (se resta tra le scene)
+        // Activate the gun if it's persistent across scenes
         if (gun != null)
             gun.SetActive(true);
     }

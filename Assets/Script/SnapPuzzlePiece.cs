@@ -16,7 +16,7 @@ public class SnapPuzzlePiece : MonoBehaviour
         grab = GetComponent<XRGrabInteractable>();
         rb = GetComponent<Rigidbody>();
 
-        // Blocca la rotazione ogni frame mentre lo tieni
+        // Lock rotation every frame while holding
         grab.selectEntered.AddListener((_) => LockRotation());
         grab.selectExited.AddListener(OnRelease);
     }
@@ -52,7 +52,7 @@ public class SnapPuzzlePiece : MonoBehaviour
 
     private void LockRotation()
     {
-        // Blocca la rotazione sempre, anche durante il grab
+        // Always lock rotation, even while being grabbed
         transform.rotation = Quaternion.identity;
         rb.angularVelocity = Vector3.zero;
     }

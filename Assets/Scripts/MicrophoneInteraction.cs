@@ -5,6 +5,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class MicrophoneInteraction : MonoBehaviour
 {
     private Vector3 initialPosition;
+
+    [Header("Settings")]
     public float moveSpeed;
     public Transform handTransform;
 
@@ -13,48 +15,48 @@ public class MicrophoneInteraction : MonoBehaviour
     void Start()
     {
         initialPosition = transform.position;
-        
 
-
-        // Aggiungi i listener per gli eventi di selezione con la firma corretta
+        // Subscribe to XR grab events
         grabInteractable.selectEntered.AddListener(OnGrab);
         grabInteractable.selectExited.AddListener(OnRelease);
     }
 
     void OnDestroy()
     {
-        // Rimuovi i listener quando il microfono viene distrutto
+        // Unsubscribe from events when destroyed
         grabInteractable.selectEntered.RemoveListener(OnGrab);
         grabInteractable.selectExited.RemoveListener(OnRelease);
     }
 
-    // Modifica il metodo OnGrab per accettare SelectEnterEventArgs
+    // Triggered when microphone is grabbed
     private void OnGrab(SelectEnterEventArgs args)
     {
-        Debug.Log("Microfono afferrato");
+        Debug.Log("Microphone grabbed");
         transform.position = handTransform.position;
-       // MoveMicrophoneTowardsHand();
+        // Optionally call MoveMicrophoneTowardsHand();
     }
 
+    // Triggered when microphone is released
     private void OnRelease(SelectExitEventArgs args)
     {
-        Debug.Log("Microfono rilasciato");
+        Debug.Log("Microphone released");
         if (!args.isCanceled)
         {
             MoveMicrophoneToInitialPosition();
         }
     }
 
+    // Move instantly to hand position
     public void MoveMicrophoneTowardsHand()
     {
-        Debug.Log("Posizione della mano: " + handTransform.position);  // Debug per vedere la posizione della mano
-        Debug.Log("Posizione del microfono: " + transform.position);
+        Debug.Log("Hand position: " + handTransform.position);
+        Debug.Log("Microphone position: " + transform.position);
         transform.position = handTransform.position;
     }
 
+    // Reset to original position
     public void MoveMicrophoneToInitialPosition()
     {
-        transform.position = initialPosition; // Forza il ritorno alla posizione iniziale
+        transform.position = initialPosition;
     }
-
 }

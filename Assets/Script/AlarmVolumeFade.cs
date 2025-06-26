@@ -5,7 +5,7 @@ public class AlarmVolumeFade : MonoBehaviour
     public AudioSource audioSource;
     public float fadeStartTime = 3f;
     public float fadeDuration = 2f;
-    public float startVolume = 1f;
+    public float startVolume = 0.5f;
     public float endVolume = 0.1f;
 
     private float timer = 0f;

@@ -4,31 +4,33 @@ using System.Collections;
 public class AlarmLight : MonoBehaviour
 {
     private Light alarmLight;
+
+    [Header("Blinking Settings")]
     public float minIntensity = 0f;
     public float maxIntensity = 5f;
-    public float blinkSpeed = 1f; // Velocità del lampeggio
+    public float blinkSpeed = 1f; // How fast the light blinks
 
-    private Coroutine blinkCoroutine;  // Riferimento al Coroutine
+    private Coroutine blinkCoroutine; // Reference to the blinking coroutine
 
     void Start()
     {
         alarmLight = GetComponent<Light>();
-        StartBlinking();  // Inizia il lampeggio
+        StartBlinking(); // Start blinking on launch
     }
 
     public void StartBlinking()
     {
-        if (blinkCoroutine == null)  // Se il Coroutine non è già in esecuzione
+        if (blinkCoroutine == null)
         {
             blinkCoroutine = StartCoroutine(BlinkLight());
         }
     }
 
-    IEnumerator BlinkLight()
+    private IEnumerator BlinkLight()
     {
         while (true)
         {
-            // Accende la luce gradualmente
+            // Gradually increase light intensity
             float elapsedTime = 0f;
             while (elapsedTime < blinkSpeed)
             {
@@ -37,7 +39,7 @@ public class AlarmLight : MonoBehaviour
                 yield return null;
             }
 
-            // Spegne la luce gradualmente
+            // Gradually decrease light intensity
             elapsedTime = 0f;
             while (elapsedTime < blinkSpeed)
             {
@@ -50,13 +52,13 @@ public class AlarmLight : MonoBehaviour
 
     public void StopBlinking()
     {
-        if (blinkCoroutine != null)  // Se il Coroutine è in esecuzione
+        if (blinkCoroutine != null)
         {
-            StopCoroutine(blinkCoroutine); // Ferma il lampeggio
-            blinkCoroutine = null;  // Azzera il riferimento del Coroutine
+            StopCoroutine(blinkCoroutine);
+            blinkCoroutine = null;
         }
 
-        alarmLight.color = Color.green; // Cambia colore a verde
-        alarmLight.intensity = maxIntensity; // Mantiene la luce accesa
+        alarmLight.color = Color.green;           // Set the light color to green
+        alarmLight.intensity = maxIntensity;      // Keep the light fully on
     }
 }

@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class ChatGroqConnector : MonoBehaviour
 {
-    public TMP_Text inputText;                // Campo con testo STT trascritto
-    public Button submitButton;               // Bottone per confermare invio
-    public ChatMessageManager chatManager;    // Nuovo gestore chat
+    public TMP_Text inputText;                // Field with STT-transcribed text
+    public Button submitButton;               // Button to confirm sending
+    public ChatMessageManager chatManager;    // Chat message manager
     public string apiKey;
 
     private bool isRequestInProgress = false;
@@ -21,13 +21,13 @@ public class ChatGroqConnector : MonoBehaviour
             {
                 string userMessage = inputText.text;
 
-                //  Mostra anche il messaggio dell’utente nella chat
+                // Show user's message in the chat
                 chatManager.AggiungiMessaggio(userMessage, true);
 
-                //  Poi mostra "Sto pensando..."
+                // Then show "Thinking..."
                 chatManager.AggiungiMessaggio("Sto pensando...", false);
 
-                // Avvia la richiesta
+                // Start the request
                 StartCoroutine(SendQuestion());
             }
         });
@@ -45,14 +45,14 @@ public class ChatGroqConnector : MonoBehaviour
 
         isRequestInProgress = true;
 
-        // Prompt di sistema
+        // System prompt
         GroqRequest requestData = new GroqRequest
         {
             model = "llama3-8b-8192",
             messages = new[] {
                 new Message {
                     role = "system",
-                    content = "Sei un esperto di sicurezza informatica che lavora in una sala server sotterranea. Rispondi solo su temi di informatica e sicurezza informatica. Rispondi con una frase secca, semplice, max 30 parole. Parla come se ti rivolgessi a un principiante. Rispondi nella lingua in cui ti parlano, dopo di questa frase parte la vera domanda dell’utente."
+                    content = "You are a cybersecurity expert working in an underground server room. Only answer questions about computer science or cybersecurity. Keep answers simple, max 30 words. Speak to beginners. Answer in the same language the user uses. Below is the actual user question."
                 },
                 new Message {
                     role = "user",
@@ -77,16 +77,17 @@ public class ChatGroqConnector : MonoBehaviour
 
         if (request.result != UnityWebRequest.Result.Success)
         {
-            chatManager.AggiungiMessaggio("Errore " + statusCode + ": " + request.error, false);
+            chatManager.AggiungiMessaggio("Error " + statusCode + ": " + request.error, false);
         }
         else
         {
             string content = ExtractResponse(responseJson);
             chatManager.RimuoviUltimoBotThinking();
-            //  Mostra risposta dell’AI
+
+            // Show AI response
             chatManager.AggiungiMessaggio(content, false);
 
-            //  Avvia lettura vocale con TTS
+            // Start TTS playback
             string[] words = content.Split(' ');
             string shortText = string.Join(" ", words, 0, Mathf.Min(30, words.Length));
             FindFirstObjectByType<TextToSpeechElevenLabs>().Speak(shortText);
@@ -104,11 +105,11 @@ public class ChatGroqConnector : MonoBehaviour
         }
         catch
         {
-            return "Errore nel parsing della risposta.";
+            return "Error parsing response.";
         }
     }
 
-    // === Classi per JSON ===
+    // === Classes for JSON serialization ===
 
     [System.Serializable]
     public class GroqRequest

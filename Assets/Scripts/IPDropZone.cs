@@ -5,7 +5,7 @@ public class IPDropZone : MonoBehaviour
 {
     public enum ZoneType { Whitelist, Blacklist }
     public ZoneType zoneType;
-    public PointAtAndShoot turret;  // Trascini la torretta nell'Inspector
+    public PointAtAndShoot turret;  
 
     private void OnTriggerEnter(Collider other)
     {

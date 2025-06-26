@@ -1,69 +1,63 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.Audio;
 
 public class TriggerDialog : MonoBehaviour
 {
     [TextArea]
-    public string[] messaggi;  // Lista di messaggi da mostrare
-    public string[] audioFileNames; // Lista di file audio
+    public string[] messages;          // Array of subtitles to display
+    public string[] audioFileNames;    // Corresponding audio clip names
 
     public SubtitleManager subtitleManager;
     private bool hasTriggered = false;
-    public bool comparso = false;
+    public bool hasAppeared = false;
 
     void OnTriggerEnter(Collider other)
     {
         if (!hasTriggered && other.CompareTag("Player"))
         {
-            comparso = true;
             hasTriggered = true;
+            hasAppeared = true;
 
             if (subtitleManager != null)
             {
-                // Avvia la sequenza di sottotitoli e audio
                 StartCoroutine(DisplayMultipleSubtitles());
             }
             else
             {
-                Debug.LogWarning("SubtitleManager non assegnato o non trovato!");
+                Debug.LogWarning("[TriggerDialog] SubtitleManager not assigned.");
             }
         }
     }
 
     private IEnumerator DisplayMultipleSubtitles()
     {
-        // Verifica che gli array abbiano la stessa lunghezza
-        int maxLength = Mathf.Max(messaggi.Length, audioFileNames.Length); // Per evitare errori se sono di lunghezza diversa
+        int steps = Mathf.Max(messages.Length, audioFileNames.Length);
 
-        for (int i = 0; i < maxLength; i++)
+        for (int i = 0; i < steps; i++)
         {
-            // Mostra il sottotitolo
-            string message = i < messaggi.Length ? messaggi[i] : ""; // Usa una stringa vuota se non ci sono messaggi rimanenti
-            string audioFileName = i < audioFileNames.Length ? audioFileNames[i] : null; // Usa null se non ci sono file audio rimanenti
+            string message = (i < messages.Length) ? messages[i] : "";
+            string audioName = (i < audioFileNames.Length) ? audioFileNames[i] : null;
 
-            subtitleManager.ShowSubtitle(message, audioFileName);  // Mostra il sottotitolo e l'audio (se presente)
+            subtitleManager.ShowSubtitle(message, audioName);
 
-            if (audioFileName != null)
+            float waitTime = 3f; // Default wait time
+
+            if (!string.IsNullOrEmpty(audioName))
             {
-                // Carica l'audio per ottenere la durata
-                AudioClip clip = Resources.Load<AudioClip>("Audio/Narrative/" + audioFileName);
+                AudioClip clip = Resources.Load<AudioClip>("Audio/Narrative/" + audioName);
                 if (clip != null)
                 {
-                    // Attendi la durata dell'audio
-                    yield return new WaitForSeconds(clip.length);
+                    waitTime = clip.length;
                 }
                 else
                 {
-                    Debug.LogWarning("Audio file not found, proceeding with only the subtitle.");
-                    yield return new WaitForSeconds(3f);  // Durata fittizia del sottotitolo senza audio
+                    Debug.LogWarning($"[TriggerDialog] Audio file not found: {audioName}");
                 }
             }
-            else
-            {
-                // Se non c'è audio, attendi un tempo fisso per la durata del sottotitolo
-                yield return new WaitForSeconds(3f);  // Tempo di attesa fittizio per i sottotitoli
-            }
+
+            yield return new WaitForSeconds(waitTime);
         }
+
+        Debug.Log("[TriggerDialog] Finished all messages.");
     }
 }

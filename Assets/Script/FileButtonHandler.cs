@@ -11,7 +11,7 @@ public class FileButtonHandler : MonoBehaviour
         if (canvasPuzzle != null)
         {
             canvasPuzzle.SetActive(true);
-            transform.parent.gameObject.SetActive(false); // Nasconde CanvasRecovery
+            transform.parent.gameObject.SetActive(false); // Hide CanvasRecovery
             Debug.Log(">> CanvasPuzzle attivato!");
         }
         else

@@ -6,9 +6,9 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Packet"))
         {
-            Destroy(collision.gameObject); // distruggi pacchetto
+            Destroy(collision.gameObject); // destroy the packet
         }
 
-        Destroy(gameObject); // distruggi il proiettile
+        Destroy(gameObject); // destroy the bullet
     }
 }

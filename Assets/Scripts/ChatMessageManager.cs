@@ -6,9 +6,9 @@ using System.Collections;
 public class ChatMessageManager : MonoBehaviour
 {
     [Header("Riferimenti UI")]
-    public Transform messageContainer;     // Il Content dentro lo ScrollView
+    public Transform messageContainer;     // Content inside the screen view
 
-    public ScrollRect scrollRect;          // Lo ScrollView
+    public ScrollRect scrollRect;          // ScrollView
     private GameObject pendingUserMessageGO = null;
     private GameObject lastBotThinkingMessage = null;
     private int counter = 0;
@@ -64,7 +64,7 @@ public class ChatMessageManager : MonoBehaviour
         rt.anchorMax = new Vector2(0, 1);
         rt.pivot = new Vector2(0, 1);
         rt.anchoredPosition = Vector2.zero;
-        rt.sizeDelta = new Vector2(200, 20); // larghezza fissa, altezza dinamica
+        rt.sizeDelta = new Vector2(200, 20); // fixed width, variable lenght
 
         StartCoroutine(ScrollInFondo());
     }

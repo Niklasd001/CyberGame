@@ -25,10 +25,10 @@ public class GlitchTextEffect : MonoBehaviour
             timer = 0f;
             glitchOn = !glitchOn;
 
-            // Cambia colore
+            // Toggle color
             textMesh.color = glitchOn ? glitchColor : baseColor;
 
-            // Leggera variazione di scala
+            // Slight scale variation
             float scale = glitchOn ? 1.01f : 1f;
             textMesh.transform.localScale = new Vector3(scale, scale, scale);
         }

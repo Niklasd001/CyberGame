@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class ServerOverloadBar : MonoBehaviour
 {
-    // Gestione della fillbar
+    // Fill bar management
     [SerializeField] private Transform fillTransform;
     [SerializeField] private TMP_Text percentageText;
 
     [SerializeField] private float maxOverload = 100f;
     [SerializeField] private float decayRate = 5f;
 
-    // Per gestire la colorazione del server fisico
+    // Physical server color indicator
     [SerializeField] private Renderer[] serverRenderers;
     [SerializeField] private Color normalColor = Color.green;
     [SerializeField] private Color warningColor = new Color(1f, 0.6f, 0f);
     [SerializeField] private Color dangerColor = Color.red;
 
-    // Gestione dell'effetto del fumo
+    // Smoke effect control
     [SerializeField] private ParticleSystem smokeEffect;
     private bool smokeStarted = false;
 
@@ -26,6 +26,7 @@ public class ServerOverloadBar : MonoBehaviour
     {
         currentOverload = Mathf.Max(0f, currentOverload - decayRate * Time.deltaTime);
         UpdateVisual();
+
         float ratio = currentOverload / maxOverload;
 
         if (ratio >= 0.8f && !smokeStarted)
@@ -47,8 +48,8 @@ public class ServerOverloadBar : MonoBehaviour
 
         if (currentOverload >= maxOverload)
         {
-            Debug.Log("SERVER CRASH: sovraccarico!");
-            // Aggiungi logica di fallimento qui
+            Debug.Log("SERVER CRASH: overload reached!");
+            // Add failure logic here
         }
     }
 
@@ -71,7 +72,7 @@ public class ServerOverloadBar : MonoBehaviour
             rend.material.color = newColor;
         }
 
-        // Aggiorna percentuale visiva
+        // Update percentage text display
         if (percentageText != null)
         {
             percentageText.text = Mathf.RoundToInt(ratio * 100f) + "%";

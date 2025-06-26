@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using static UnityEngine.InputManagerEntry;
+using Unity.VisualScripting;
 
 public class SubtitleManager : MonoBehaviour
 {
@@ -73,10 +75,12 @@ public class SubtitleManager : MonoBehaviour
             "To save the day, you gotta hack your way through the fortress door.",
             "Oh, and by the way, the door lock is encrypted — yeah, like something straight out of an old-school cryptography textbook.",
             "Time to use those hacker skills. Get ready for some serious key-smashing!",
-            "But wait, the next step isn’t just about breaking through digital walls. You’ve got to reach the heart of the Security Palace."
+            "But wait, the next step isn’t just about breaking through digital walls. You’ve got to reach the heart of the Security Palace.",
+            "But hey, if you're craving intel before diving in, the Digital Library is your go-to ",
+            "guarded by an ancient mind-machine hybrid that’s seen every breach, patch, and meltdown in history."
         };
 
-        List<string> audioFiles = new List<string>() { "Audio1", "Audio2", "audio3", "audio4", "audio5", "audio6", "audio7" };
+        List<string> audioFiles = new List<string>() { "Audio1", "Audio2", "audio3", "audio4", "audio5", "audio6", "audio7","audio8","audio9" };
 
         for (int i = 0; i < introMessages.Count; i++)
         {

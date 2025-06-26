@@ -11,7 +11,7 @@ public class CambiaScena : MonoBehaviour
         if (!string.IsNullOrEmpty(nomeScena))
         {
             Debug.Log("Cambio scena in corso: " + nomeScena);
-            //  SceneManager.LoadScene(nomeScena);
+            
             StartCoroutine(CaricaSceneAsync());
         }
         else

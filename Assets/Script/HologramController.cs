@@ -1,22 +1,32 @@
 using UnityEngine;
 using UnityEngine.XR;
+using System.Collections;
 using System.Collections.Generic;
 
 public class GuidaController : MonoBehaviour
 {
-    public GameObject guida;
-    public Transform handAnchor;
-    public Transform backpackAnchor;
-    public GameObject ologramma; // nuovo riferimento
-    private CyberHelper cyberHelper;
+    public GameObject guida;                      // The tablet object, statically placed in the scene
+    public GameObject ologramma;                  // Reference to the assistant (optional)
+    public Renderer displayRenderer;              // Screen mesh
+    public Material[] materialiGuida;             // Array of guide materials/images
+    public float tempoPerImmagine = 5f;           // Seconds between each slide
 
+    private CyberHelper cyberHelper;
     private bool isActive = false;
+    private Coroutine sequenzaCoroutine;
     private InputDevice leftHand;
 
     void Start()
     {
-       ologramma.SetActive(true);
-        guida.SetActive(false);
+        guida.SetActive(false);       // Hide the tablet at start
+        ologramma.SetActive(true);    // Keep the assistant active if needed
+        StartCoroutine(AvviaGuidaDopoRitardo());
+    }
+
+    private IEnumerator AvviaGuidaDopoRitardo()
+    {
+        yield return new WaitForSeconds(2f);
+        ToggleGuida();
     }
 
     void Update()
@@ -33,47 +43,48 @@ public class GuidaController : MonoBehaviour
             leftHand.TryGetFeatureValue(CommonUsages.primaryButton, out bool buttonPressed) &&
             buttonPressed)
         {
-            Debug.Log("X premuto!");
+            Debug.Log("X button pressed!");
             ToggleGuida();
         }
     }
 
     void ToggleGuida()
     {
-        isActive = !isActive;
-
-        if (isActive)
+        if (!isActive)
         {
             guida.SetActive(true);
-            // Ottieni la posizione e la direzione della camera
-            Transform cam = Camera.main.transform;
 
-            // Calcola una posizione a 0.5m davanti e 1.2m da terra (rispetto al giocatore)
-            Vector3 spawnPosition = cam.position + cam.forward * 0.7f;
-            spawnPosition.y = cam.position.y - 0.4f; // abbassa un po' rispetto alla testa
-
-            // Posiziona la guida lì
-            guida.SetActive(true);
-            ologramma.SetActive(true);
-            guida.transform.position = spawnPosition;
-
-            // Falla ruotare verso il giocatore
-            Vector3 lookAtPosition = new Vector3(cam.position.x, spawnPosition.y, cam.position.z);
-            guida.transform.LookAt(lookAtPosition);
-            guida.transform.Rotate(0, -223, -170);
             if (cyberHelper == null)
                 cyberHelper = ologramma.GetComponent<CyberHelper>();
 
-            if (cyberHelper != null)
-                cyberHelper.Parla("Hi, you are into the firewall, see around of you");
+            if (sequenzaCoroutine != null)
+                StopCoroutine(sequenzaCoroutine);
+            sequenzaCoroutine = StartCoroutine(MostraSequenzaImmagini());
 
-
+            isActive = true;
         }
         else
         {
-            guida.transform.position = backpackAnchor.position;
-            guida.transform.rotation = backpackAnchor.rotation;
             guida.SetActive(false);
+
+            if (sequenzaCoroutine != null)
+            {
+                StopCoroutine(sequenzaCoroutine);
+                sequenzaCoroutine = null;
+            }
+
+            isActive = false;
         }
+    }
+
+    private IEnumerator MostraSequenzaImmagini()
+    {
+        for (int i = 0; i < materialiGuida.Length; i++)
+        {
+            displayRenderer.material = materialiGuida[i];
+            yield return new WaitForSeconds(tempoPerImmagine);
+        }
+
+        ToggleGuida(); // Automatically close the tablet at the end of the sequence
     }
 }
