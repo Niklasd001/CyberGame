@@ -30,8 +30,8 @@ sysinfo.txt
 *.orig
 *.log
 # Ignora cartelle specifiche
-Assets/BackPack/
-Assets/KLURA Design Assets/
+#Assets/BackPack/
+#Assets/KLURA Design Assets/
 
 # Backup Android/Addressable temporanei
 [Aa]ssets/AddressableAssetsData/*/*.bin*
